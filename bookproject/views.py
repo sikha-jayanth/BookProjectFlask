@@ -7,7 +7,7 @@ from .extensions import mongo
 bp=Blueprint('bp',__name__)
 
 
-
+#to add a new book to collection
 @bp.route('/bookcreate',methods=['POST'])
 def add_book():
     _json=request.json
@@ -22,6 +22,7 @@ def add_book():
         return resp
     else:
         return not_found()
+
 @bp.errorhandler(404)
 def not_found(error=None):
     message={
@@ -32,6 +33,7 @@ def not_found(error=None):
     resp.status_code=404
     return resp
 
+#to view all books and search using 'book' or 'author'
 @bp.route('/booklist')
 def list_books():
     if request.args:
@@ -49,12 +51,14 @@ def list_books():
         resp=dumps(books)
         return resp
 
+#to view details of a particular book
 @bp.route('/bookdetail/<id>')
 def book_detail(id):
     book=mongo.db.book.find({'_id':ObjectId(id)})
     resp=dumps(book)
     return resp
 
+#to view delete a particular book
 @bp.route('/bookdelete/<id>',methods=['DELETE'])
 def delete_book(id):
     mongo.db.book.delete_one({'_id':ObjectId(id)})
@@ -62,7 +66,7 @@ def delete_book(id):
     resp.status_code=200
     return resp
 
-
+#to update details of a particular book
 @bp.route('/bookupdate/<id>',methods=["PUT","PATCH"])
 def update_book(id):
     _id=id
